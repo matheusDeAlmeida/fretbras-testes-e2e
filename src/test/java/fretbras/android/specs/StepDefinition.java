@@ -36,7 +36,7 @@ public class StepDefinition extends BaseClass {
 
             driver = new AppiumDriver<MobileElement>(url, cap);
             // to-do: verificar se isso funciona mesmo
-            driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+            driver.manage().timeouts().implicitlyWait(40, TimeUnit.SECONDS);
 
         } catch (Exception exp) {
             System.out.println(exp.getCause());
@@ -46,9 +46,9 @@ public class StepDefinition extends BaseClass {
     }
 
     @After
-    public void finish() {
+    public void finishTest() {
         try {
-            driver.close();
+            // driver.close();
             driver.quit();
         } catch (Exception exp) {
             System.out.println(exp.getCause());
@@ -70,11 +70,12 @@ public class StepDefinition extends BaseClass {
 
     @When("I type my {string} and I tap on finish button")
     public void fillPasswordField(String string) {
-        tapById(AccessPage.passwordInputField, driver);
+        tapById(AccessPage.passwordInputField, string, driver);
         tapById(AccessPage.passwordFinishButton, driver);
     }
+
     @Then("I should be on checkin page and I should see the permissions dialog")
-    public void finish(String string){
+    public void finish() {
         tapById(PermissionsDialog.cancelButton, driver);
     }
 
