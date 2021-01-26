@@ -1,13 +1,9 @@
-@tolls_table
-Feature: Tolls table
-    I want to access the tolls table
+Feature: Tabela de pedágios
+    Quero ver a tabela de fretes
 
-    Scenario: Login
-    Given I tap on start button
-    And I type my truck <plate> and  tap on next button
-    When I type my <password> and I tap on finish button
-    Then I should be on checkin page and I should see the permissions dialog
-
-    Examples:
-        |   plate    | password   |
-        |  "DTY1986" | "R1234567" |
+    Scenario: Valor do frete para um caminhão de 2 eixos
+        Given que eu faço login
+        And eu faço checkin
+        When eu escolho um frete
+        Then eu vejo a tabela de pedágios
+        

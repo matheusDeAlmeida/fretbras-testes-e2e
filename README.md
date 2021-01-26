@@ -26,7 +26,7 @@
     </li>
     <li style="padding-bottom: 15px;">E habilitar as configurarações em seguida:
         <div>
-            src/test/java/fretbras/android/specs/StepDefinition.java:25: final int device = 0;
+            src/test/java/fretbras/android/specs/StepDefinition.java:29: final int device = 0;
         </div>
     </li>
 </ul>

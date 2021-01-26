@@ -7,18 +7,22 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 
 import fretbras.android.data.Constants;
 import fretbras.android.pages.AccessPage;
+import fretbras.android.pages.CheckinPage;
+import fretbras.android.pages.CheckinViewFreightsPage;
+import fretbras.android.pages.FreightDetails;
 import fretbras.android.pages.PermissionsDialog;
-import io.appium.java_client.AppiumDriver;
+import fretbras.android.pages.TollsTablePage;
+import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.MobileElement;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.And;
+import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
-import io.cucumber.java.en.When;
 
-public class StepDefinition extends BaseClass {
+public class StepDefinition {
 
-    static AppiumDriver<MobileElement> driver;
+    static AndroidDriver<MobileElement> driver;
 
     @Before
     public void setup() {
@@ -34,7 +38,7 @@ public class StepDefinition extends BaseClass {
             cap.setCapability("appActivity", "br.lgfelicio.access.AccessActivity");
             URL url = new URL("http://0.0.0.0:4723/wd/hub");
 
-            driver = new AppiumDriver<MobileElement>(url, cap);
+            driver = new AndroidDriver<MobileElement>(url, cap);
             // to-do: verificar se isso funciona mesmo
             driver.manage().timeouts().implicitlyWait(40, TimeUnit.SECONDS);
 
@@ -57,26 +61,41 @@ public class StepDefinition extends BaseClass {
         }
     }
 
-    @When("I tap on start button")
-    public void tapOnStart() {
-        tapById(AccessPage.startButton, driver);
+    @Given("que eu faço login")
+    public void login() {
+        AccessPage accessPage = new AccessPage();
+        PermissionsDialog permissionsDialog = new PermissionsDialog();
+
+        accessPage.clickOnStartButton(driver);
+        accessPage.typePlateInputField(driver, Constants.USERS[0].getUserPlate());
+        accessPage.clickOnPlateNextButton(driver);
+        accessPage.typePassword(driver, Constants.USERS[0].getPassword());
+        accessPage.clickOnPasswordFinishButton(driver);
+
+        permissionsDialog.clickOnCancelButton(driver);
     }
 
-    @And("I type my truck {string} and  tap on next button")
-    public void fillPlateField(String string) {
-        tapById(AccessPage.plateInputField, string, driver);
-        tapById(AccessPage.plateNextButton, driver);
+    @And("eu faço checkin")
+    public void checkin() {
+        CheckinPage checkinPage = new CheckinPage();
+        checkinPage.clickOnTypeCity(driver);
+        checkinPage.chooseOriginCity(driver, Constants.CITIES[0]);
+        checkinPage.clickOnSeeFreights(driver);
     }
 
-    @When("I type my {string} and I tap on finish button")
-    public void fillPasswordField(String string) {
-        tapById(AccessPage.passwordInputField, string, driver);
-        tapById(AccessPage.passwordFinishButton, driver);
+    @And("eu escolho um frete")
+    public void chooseFreight() {
+        CheckinViewFreightsPage checkinViewFreightsPage = new CheckinViewFreightsPage();
+        checkinViewFreightsPage.clickOnFirstFreight(driver);
     }
 
-    @Then("I should be on checkin page and I should see the permissions dialog")
-    public void finish() {
-        tapById(PermissionsDialog.cancelButton, driver);
-    }
+    @Then("eu vejo a tabela de pedágios")
+    public void twoAxisTruck() {
+        FreightDetails freightDetails = new FreightDetails();
+        TollsTablePage tollsTablePage = new TollsTablePage();
 
+        freightDetails.clickOnTollsTable(driver);
+        String twoAxisTollPrice = tollsTablePage.getTwoAxisTruckTollPrice(driver).getText();
+        System.out.println(twoAxisTollPrice);
+    }
 }
