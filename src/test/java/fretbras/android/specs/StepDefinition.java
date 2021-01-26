@@ -16,9 +16,9 @@ import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.MobileElement;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
-import io.cucumber.java.en.And;
-import io.cucumber.java.en.Given;
-import io.cucumber.java.en.Then;
+import io.cucumber.java.pt.Dado;
+import io.cucumber.java.pt.E;
+import io.cucumber.java.pt.Entao;
 
 public class StepDefinition {
 
@@ -39,7 +39,6 @@ public class StepDefinition {
             URL url = new URL("http://0.0.0.0:4723/wd/hub");
 
             driver = new AndroidDriver<MobileElement>(url, cap);
-            // to-do: verificar se isso funciona mesmo
             driver.manage().timeouts().implicitlyWait(40, TimeUnit.SECONDS);
 
         } catch (Exception exp) {
@@ -61,7 +60,7 @@ public class StepDefinition {
         }
     }
 
-    @Given("que eu faço login")
+    @Dado("que eu faço login")
     public void login() {
         AccessPage accessPage = new AccessPage();
         PermissionsDialog permissionsDialog = new PermissionsDialog();
@@ -75,7 +74,11 @@ public class StepDefinition {
         permissionsDialog.clickOnCancelButton(driver);
     }
 
-    @And("eu faço checkin")
+    /**
+     * Se o usuário já fez checkin, esse passo dever ser pulado.
+     *
+     */
+    @E("eu faço checkin")
     public void checkin() {
         CheckinPage checkinPage = new CheckinPage();
         checkinPage.clickOnTypeCity(driver);
@@ -83,13 +86,18 @@ public class StepDefinition {
         checkinPage.clickOnSeeFreights(driver);
     }
 
-    @And("eu escolho um frete")
+    @E("eu escolho um frete")
     public void chooseFreight() {
         CheckinViewFreightsPage checkinViewFreightsPage = new CheckinViewFreightsPage();
         checkinViewFreightsPage.clickOnFirstFreight(driver);
     }
 
-    @Then("eu vejo a tabela de pedágios")
+    /**
+     * O botão/link da tabela de pedágios nem sempre aparece. Quando ele não
+     * aparece, esse teste quebra.
+     *
+     */
+    @Entao("eu vejo a tabela de pedágios com o pedágio para um caminhão de 2 eixos")
     public void twoAxisTruck() {
         FreightDetails freightDetails = new FreightDetails();
         TollsTablePage tollsTablePage = new TollsTablePage();
